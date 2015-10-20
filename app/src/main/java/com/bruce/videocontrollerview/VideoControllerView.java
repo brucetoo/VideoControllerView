@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -47,6 +46,10 @@ public class VideoControllerView extends FrameLayout {
     private boolean mDragging;
     private StringBuilder mFormatBuilder;
     private Formatter mFormatter;
+    //top layout
+    private View mTopLayout;//this can custom animate layout
+    private ImageButton mBackButton;
+    private TextView mTitleText;
     //bottom layout
     private View mBottomLayout;
     private ImageButton mPauseButton;
@@ -125,10 +128,11 @@ public class VideoControllerView extends FrameLayout {
         mAnchorView = view;
         FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.WRAP_CONTENT
         );
         //remove all before add view
         removeAllViews();
+//        setBackgroundColor(Color.BLUE);
         View v = makeControllerView();
         addView(v, frameParams);
     }
@@ -146,6 +150,16 @@ public class VideoControllerView extends FrameLayout {
     }
 
     private void initControllerView(View v) {
+        //top layout
+        mTopLayout = v.findViewById(R.id.layout_top);
+        mBackButton = (ImageButton) v.findViewById(R.id.top_back);
+        if(mBackButton != null){
+            mBackButton.requestFocus();
+            mBackButton.setOnClickListener(mBackListener);
+        }
+
+        mTitleText = (TextView) v.findViewById(R.id.top_title);
+
         //bottom layout
         mBottomLayout = v.findViewById(R.id.layout_bottom);
         mPauseButton = (ImageButton) v.findViewById(R.id.bottom_pause);
@@ -195,10 +209,8 @@ public class VideoControllerView extends FrameLayout {
             //add controller view to bottom of the AnchorView
             FrameLayout.LayoutParams tlp = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    Gravity.BOTTOM
-            );
-
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+//            (int) (mContext.getResources().getDisplayMetrics().density * 45)
             mAnchorView.addView(this, tlp);
             mShowing = true;//set view state
         }
@@ -305,6 +317,7 @@ public class VideoControllerView extends FrameLayout {
         if (mCurrentTime != null)
             mCurrentTime.setText(stringToTime(position));
 
+        mTitleText.setText(mPlayer.getTopTitle());
         return position;
     }
 
@@ -314,6 +327,12 @@ public class VideoControllerView extends FrameLayout {
         return true;
     }
 
+    /**
+     * Handle system key event
+     * Also can ignore this...
+     * @param event
+     * @return
+     */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (mPlayer == null) {
@@ -365,29 +384,6 @@ public class VideoControllerView extends FrameLayout {
         show();
         return super.dispatchKeyEvent(event);
     }
-
-
-    private View.OnClickListener mBackListener = new View.OnClickListener() {
-        public void onClick(View v) {
-//            doPauseResume();
-//            show(DEFAULT_TIMEOUT);
-        }
-    };
-
-
-    private View.OnClickListener mPauseListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            doPauseResume();
-            show();
-        }
-    };
-
-    private View.OnClickListener mFullscreenListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            doToggleFullscreen();
-            show();
-        }
-    };
 
     /**
      * toggle pause or play
@@ -486,6 +482,41 @@ public class VideoControllerView extends FrameLayout {
         super.setEnabled(enabled);
     }
 
+
+
+    /**
+     * set top back click listener
+     */
+    private View.OnClickListener mBackListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            mPlayer.exit();
+        }
+    };
+
+
+    /**
+     * set pause click listener
+     */
+    private View.OnClickListener mPauseListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            doPauseResume();
+            show();
+        }
+    };
+
+    /**
+     * set full screen click listener
+     */
+    private View.OnClickListener mFullscreenListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            doToggleFullscreen();
+            show();
+        }
+    };
+
+    /**
+     * set backward listener,may add gesture to handle this
+     */
     private View.OnClickListener mBackwardListener = new View.OnClickListener() {
         public void onClick(View v) {
             if (mPlayer == null) {
@@ -501,6 +532,9 @@ public class VideoControllerView extends FrameLayout {
         }
     };
 
+    /**
+     * set forward listener
+     */
     private View.OnClickListener mForwardListener = new View.OnClickListener() {
         public void onClick(View v) {
             if (mPlayer == null) {
@@ -590,6 +624,16 @@ public class VideoControllerView extends FrameLayout {
          * toggle fullScreen
          */
         void toggleFullScreen();
+
+        /**
+         * exit media player
+         */
+        void exit();
+
+        /**
+         * get top title name
+         */
+        String getTopTitle();
     }
 
 }

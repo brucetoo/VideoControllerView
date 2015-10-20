@@ -13,7 +13,7 @@ import android.view.ViewGroup;
  * At 21:53
  */
 public class ResizeSurfaceView extends SurfaceView {
-    private static final int LIMIT_DIP = 23;
+    private static final int MARGIN_DP = 0;//margin of ResizeSurfaceView
     public ResizeSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -35,14 +35,14 @@ public class ResizeSurfaceView extends SurfaceView {
             DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
             int windowWidth = displayMetrics.widthPixels;
             int windowHeight = displayMetrics.heightPixels;
-            int limitpx = (int) (getContext().getResources().getDisplayMetrics().density*LIMIT_DIP);
+            int margin = (int) (getContext().getResources().getDisplayMetrics().density* MARGIN_DP);
             float videoRatio = 0;
             if (windowWidth < windowHeight) {
                 videoRatio = ((float) (videoWidth)) / videoHeight;
             } else {
                 videoRatio = ((float) (videoHeight)) / videoWidth;
             }
-            if (windowWidth < windowHeight) {// 竖屏
+            if (windowWidth < windowHeight) {// portrait
                 if (videoWidth > videoHeight) {
                     if (surfaceViewWidth / videoRatio > surfaceViewHeight) {
                         lp.height = surfaceViewHeight;
@@ -60,20 +60,20 @@ public class ResizeSurfaceView extends SurfaceView {
                         lp.width = (int) (surfaceViewHeight * videoRatio);
                     }
                 }
-            } else if (windowWidth > windowHeight) {// 横屏
-                if (videoWidth > videoHeight) {//视频是横的
+            } else if (windowWidth > windowHeight) {// landscape
+                if (videoWidth > videoHeight) {//video is landscape
                     if (windowWidth * videoRatio > videoHeight) {
-                        lp.height = windowHeight - limitpx;
-                        lp.width = (int) ((windowHeight - limitpx) / videoRatio);
+                        lp.height = windowHeight - margin;
+                        lp.width = (int) ((windowHeight - margin) / videoRatio);
                     } else {
                         lp.height = (int) (windowWidth * videoRatio);
                         lp.width = windowWidth;
                     }
-                } else if (videoWidth < videoHeight) {//视频是竖的
-                    lp.width = (int) ((windowHeight - limitpx) / videoRatio);
-                    lp.height = windowHeight - limitpx;
+                } else if (videoWidth < videoHeight) {//video is portrait
+                    lp.width = (int) ((windowHeight - margin) / videoRatio);
+                    lp.height = windowHeight - margin;
                 } else {
-                    lp.height = windowHeight- limitpx;
+                    lp.height = windowHeight- margin;
                     lp.width = lp.height;
                 }
             }

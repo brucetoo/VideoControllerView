@@ -21,8 +21,8 @@ import java.io.IOException;
 public class MainActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl, MediaPlayer.OnVideoSizeChangedListener {
 
     private final static String TAG = "MainActivity";
-    ResizeSurfaceView videoSurface;
-    MediaPlayer player;
+    ResizeSurfaceView mVideoSurface;
+    MediaPlayer mMediaPlayer;
     VideoControllerView controller;
     private int mVideoWidth;
     private int mVideoHeight;
@@ -34,33 +34,41 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
 
-        videoSurface = (ResizeSurfaceView) findViewById(R.id.videoSurface);
+        mVideoSurface = (ResizeSurfaceView) findViewById(R.id.videoSurface);
         mContentView = findViewById(R.id.video_container);
-        SurfaceHolder videoHolder = videoSurface.getHolder();
+        SurfaceHolder videoHolder = mVideoSurface.getHolder();
         videoHolder.addCallback(this);
 
-        player = new MediaPlayer();
-        player.setOnVideoSizeChangedListener(this);
-        controller = new VideoControllerView(this);
+            mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setOnVideoSizeChangedListener(this);
+            controller = new VideoControllerView(this);
 
-        try {
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.setDataSource(this, Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
-            player.setOnPreparedListener(this);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            try {
+                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mMediaPlayer.setDataSource(this, Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
+                mMediaPlayer.setOnPreparedListener(this);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        mVideoSurface.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                controller.toggleContollerView();
+                return false;
+            }
+        });
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        controller.show();
+//        controller.show();
         return false;
     }
 
@@ -69,23 +77,21 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
         mVideoHeight = mp.getVideoHeight();
         mVideoWidth = mp.getVideoWidth();
         if (mVideoHeight > 0 && mVideoWidth > 0)
-            videoSurface.adjustSize(mContentView.getWidth(), mContentView.getHeight(), player.getVideoWidth(), player.getVideoHeight());
+            mVideoSurface.adjustSize(mContentView.getWidth(), mContentView.getHeight(), mMediaPlayer.getVideoWidth(), mMediaPlayer.getVideoHeight());
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (mVideoWidth > 0 && mVideoHeight > 0)
-            videoSurface.adjustSize(getDeviceWidth(this),getDeviceHeight(this), mVideoWidth, mVideoHeight);
+            mVideoSurface.adjustSize(getDeviceWidth(this),getDeviceHeight(this),mVideoSurface.getWidth(), mVideoSurface.getHeight());
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(player != null){
-            player.release();
-            player = null;
+    private void resetPlayer() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.reset();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
         }
     }
 
@@ -112,26 +118,29 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        player.setDisplay(holder);
-        player.prepareAsync();
+        mMediaPlayer.setDisplay(holder);
+        mMediaPlayer.prepareAsync();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+          resetPlayer();
     }
 // End SurfaceHolder.Callback
 
-    // Implement MediaPlayer.OnPreparedListener
+
+// Implement MediaPlayer.OnPreparedListener
     @Override
     public void onPrepared(MediaPlayer mp) {
         controller.setControlListener(this);
         controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
-        player.start();
+        mMediaPlayer.start();
     }
 // End MediaPlayer.OnPreparedListener
 
-    // Implement VideoMediaController.MediaPlayerControl
+    /**
+     * Implement VideoMediaController.MediaPlayerControl
+      */
     @Override
     public boolean canPause() {
         return true;
@@ -154,32 +163,48 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
 
     @Override
     public int getCurrentPosition() {
-        return player.getCurrentPosition();
+         if(null != mMediaPlayer)
+           return mMediaPlayer.getCurrentPosition();
+        else
+           return 0;
     }
 
     @Override
     public int getDuration() {
-        return player.getDuration();
+        if(null != mMediaPlayer)
+            return mMediaPlayer.getDuration();
+        else
+            return 0;
     }
 
     @Override
     public boolean isPlaying() {
-        return player.isPlaying();
+        if(null != mMediaPlayer)
+            return mMediaPlayer.isPlaying();
+        else
+            return false;
     }
 
     @Override
     public void pause() {
-        player.pause();
+        if(null != mMediaPlayer) {
+            mMediaPlayer.pause();
+        }
+
     }
 
     @Override
     public void seekTo(int i) {
-        player.seekTo(i);
+        if(null != mMediaPlayer) {
+            mMediaPlayer.seekTo(i);
+        }
     }
 
     @Override
     public void start() {
-        player.start();
+        if(null != mMediaPlayer) {
+            mMediaPlayer.start();
+        }
     }
 
     @Override
@@ -194,6 +219,17 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
        }else {
            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
        }
+    }
+
+    @Override
+    public void exit() {
+        resetPlayer();
+        finish();
+    }
+
+    @Override
+    public String getTopTitle() {
+        return "直播直播";
     }
     // End VideoMediaController.MediaPlayerControl
 
