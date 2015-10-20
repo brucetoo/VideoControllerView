@@ -1,33 +1,46 @@
 package com.bruce.videocontrollerview;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl {
+public class MainActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl, MediaPlayer.OnVideoSizeChangedListener {
 
-    SurfaceView videoSurface;
+    private final static String TAG = "MainActivity";
+    ResizeSurfaceView videoSurface;
     MediaPlayer player;
     VideoControllerView controller;
+    private int mVideoWidth;
+    private int mVideoHeight;
+    private View mContentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
 
-        videoSurface = (SurfaceView) findViewById(R.id.videoSurface);
+        videoSurface = (ResizeSurfaceView) findViewById(R.id.videoSurface);
+        mContentView = findViewById(R.id.video_container);
         SurfaceHolder videoHolder = videoSurface.getHolder();
         videoHolder.addCallback(this);
 
         player = new MediaPlayer();
+        player.setOnVideoSizeChangedListener(this);
         controller = new VideoControllerView(this);
 
         try {
@@ -52,11 +65,44 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     }
 
     @Override
+    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+        mVideoHeight = mp.getVideoHeight();
+        mVideoWidth = mp.getVideoWidth();
+        if (mVideoHeight > 0 && mVideoWidth > 0)
+            videoSurface.adjustSize(mContentView.getWidth(), mContentView.getHeight(), player.getVideoWidth(), player.getVideoHeight());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mVideoWidth > 0 && mVideoHeight > 0)
+            videoSurface.adjustSize(getDeviceWidth(this),getDeviceHeight(this), mVideoWidth, mVideoHeight);
+    }
+
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        player.release();
-        player = null;
+        if(player != null){
+            player.release();
+            player = null;
+        }
     }
+
+    public static int getDeviceWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
+        return mDisplayMetrics.widthPixels;
+    }
+
+    public static int getDeviceHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
+        return mDisplayMetrics.heightPixels;
+    }
+
 
     // Implement SurfaceHolder.Callback
     @Override
@@ -138,12 +184,16 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
 
     @Override
     public boolean isFullScreen() {
-        return false;
+        return getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ? true : false;
     }
 
     @Override
     public void toggleFullScreen() {
-
+       if(isFullScreen()){
+           setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+       }else {
+           setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+       }
     }
     // End VideoMediaController.MediaPlayerControl
 
