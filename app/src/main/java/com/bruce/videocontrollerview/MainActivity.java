@@ -229,7 +229,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
 
     @Override
     public String getTopTitle() {
-        return "直播直播";
+        return "buck bunny".toUpperCase();
     }
     // End VideoMediaController.MediaPlayerControl
 
