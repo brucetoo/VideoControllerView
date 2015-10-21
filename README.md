@@ -24,15 +24,12 @@ In short,easy to integrate
 ##How to use
 > 1.init VideoControllerView like this
   ```java
-  
   controller = new VideoControllerView(this);
   
   ```
-  
 > 2.after media prepared
 
   ```java
-  
   // Implement MediaPlayer.OnPreparedListener
       @Override
       public void onPrepared(MediaPlayer mp) {
