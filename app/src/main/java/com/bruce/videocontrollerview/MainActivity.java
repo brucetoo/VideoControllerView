@@ -18,7 +18,7 @@ import android.widget.FrameLayout;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl, MediaPlayer.OnVideoSizeChangedListener {
+public class MainActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControlListener, MediaPlayer.OnVideoSizeChangedListener {
 
     private final static String TAG = "MainActivity";
     ResizeSurfaceView mVideoSurface;
@@ -132,8 +132,10 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
 // Implement MediaPlayer.OnPreparedListener
     @Override
     public void onPrepared(MediaPlayer mp) {
-        controller.setControlListener(this);
+        //setup video controller view
+        controller.setMediaPlayerControlListener(this);
         controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
+        controller.setGestureListener(this);
         mMediaPlayer.start();
     }
 // End MediaPlayer.OnPreparedListener

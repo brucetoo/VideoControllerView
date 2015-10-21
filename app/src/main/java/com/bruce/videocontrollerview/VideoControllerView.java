@@ -12,7 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,13 +30,13 @@ import java.lang.ref.WeakReference;
 import java.util.Formatter;
 import java.util.Locale;
 
-public class VideoControllerView extends FrameLayout {
+public class VideoControllerView extends FrameLayout implements VideoGestureListener {
 
     private static final String TAG = "VideoControllerView";
 
     private static final int HANDLER_ANIMATE_OUT = 1;// out animate
     private static final int HANDLER_UPDATE_PROGRESS = 2;//cycle update progress
-    private MediaPlayerControl mPlayer;// control media play
+    private MediaPlayerControlListener mPlayer;// control media play
     private Context mContext;
     private ViewGroup mAnchorView;//anchor view
     private View mRootView; // root view of this
@@ -46,6 +46,8 @@ public class VideoControllerView extends FrameLayout {
     private boolean mDragging;
     private StringBuilder mFormatBuilder;
     private Formatter mFormatter;
+    private GestureDetector mGestureDetector;
+    private VideoGestureListener mVideoGestureListener;
     //top layout
     private View mTopLayout;//this can custom animate layout
     private ImageButton mBackButton;
@@ -109,34 +111,6 @@ public class VideoControllerView extends FrameLayout {
         }
     }
 
-
-    /**
-     * setControlListener update play state
-     * @param player self
-     */
-    public void setControlListener(MediaPlayerControl player) {
-        mPlayer = player;
-        togglePausePlay();
-        toggleFullScreen();
-    }
-
-    /**
-     * set anchor view
-     * @param view view that hold controller view
-     */
-    public void setAnchorView(ViewGroup view) {
-        mAnchorView = view;
-        FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        //remove all before add view
-        removeAllViews();
-//        setBackgroundColor(Color.BLUE);
-        View v = makeControllerView();
-        addView(v, frameParams);
-    }
-
     /**
      * init controller view
      * @return
@@ -192,7 +166,7 @@ public class VideoControllerView extends FrameLayout {
     /**
      * show controller view
      */
-    public void show() {
+    private void show() {
         if (!mShowing && mAnchorView != null) {
 
             //animate anchorview when layout changes
@@ -255,7 +229,7 @@ public class VideoControllerView extends FrameLayout {
        mAnchorView.setLayoutTransition(new LayoutTransition());
        equals android:animateLayoutChanges="true"
      */
-    public void hide() {
+    private void hide() {
         if (mAnchorView == null) {
             return;
         }
@@ -323,72 +297,17 @@ public class VideoControllerView extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        toggleContollerView();
+        if(null != mGestureDetector){
+           mGestureDetector.onTouchEvent(event);
+        }
+//        toggleContollerView();
         return true;
-    }
-
-    /**
-     * Handle system key event
-     * Also can ignore this...
-     * @param event
-     * @return
-     */
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mPlayer == null) {
-            return true;
-        }
-
-        int keyCode = event.getKeyCode();
-        //handle unique down event
-        final boolean uniqueDown = event.getRepeatCount() == 0
-                && event.getAction() == KeyEvent.ACTION_DOWN;
-
-        if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK
-                || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-                || keyCode == KeyEvent.KEYCODE_SPACE) {//pause video
-            if (uniqueDown) {
-                doPauseResume();
-                show();
-                if (mPauseButton != null) {
-                    mPauseButton.requestFocus();
-                }
-            }
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {//play video
-            if (uniqueDown && !mPlayer.isPlaying()) {
-                mPlayer.start();
-                togglePausePlay();
-                show();
-            }
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
-                || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {// stop video
-            if (uniqueDown && mPlayer.isPlaying()) {
-                mPlayer.pause();
-                togglePausePlay();
-                show();
-            }
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
-                || keyCode == KeyEvent.KEYCODE_VOLUME_UP
-                || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
-            return super.dispatchKeyEvent(event);
-        } else if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {
-            if (uniqueDown) {
-                hide();
-            }
-            return true;
-        }
-
-        show();
-        return super.dispatchKeyEvent(event);
     }
 
     /**
      * toggle pause or play
      */
-    public void togglePausePlay() {
+    private void togglePausePlay() {
         if (mRootView == null || mPauseButton == null || mPlayer == null) {
             return;
         }
@@ -550,11 +469,65 @@ public class VideoControllerView extends FrameLayout {
         }
     };
 
+    /**
+     * setMediaPlayerControlListener update play state
+     * @param player self
+     */
+    public void setMediaPlayerControlListener(MediaPlayerControlListener player) {
+        mPlayer = player;
+        togglePausePlay();
+        toggleFullScreen();
+    }
+
+    /**
+     * set anchor view
+     * @param view view that hold controller view
+     */
+    public void setAnchorView(ViewGroup view) {
+        mAnchorView = view;
+        FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        //remove all before add view
+        removeAllViews();
+//        setBackgroundColor(Color.BLUE);
+        View v = makeControllerView();
+        addView(v, frameParams);
+    }
+
+    /**
+     * set gesture listen to control media player
+     * @param context
+     */
+    public void setGestureListener(Context context){
+        mVideoGestureListener = this;
+        mGestureDetector = new GestureDetector(context,new ViewGestureListener(context,mVideoGestureListener));
+    }
+
+
+  //implement ViewGestureListener
+    @Override
+    public void onSingleTap() {
+         toggleContollerView();
+    }
+
+    @Override
+    public void onHorizontalScroll(MotionEvent event, float delta) {
+
+    }
+
+    @Override
+    public void onVerticalScroll(MotionEvent motionEvent, float delta, int direction) {
+
+    }
+
+    //end of ViewGestureListener
 
     /**
      * Interface of Media Controller View
      */
-    public interface MediaPlayerControl {
+    public interface MediaPlayerControlListener {
         /**
          * start play video
          */
