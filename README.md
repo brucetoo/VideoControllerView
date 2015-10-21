@@ -3,7 +3,7 @@
 # FINAL EFFECT
 [YOUTUBE](https://www.youtube.com/watch?v=Cew5WQY3_ws)
 Control brightness or volume,gif will be here later
-[!volume](./volume.png)
+![volume](./volume.png)
 
 ##Feature
 
@@ -13,9 +13,9 @@ Control brightness or volume,gif will be here later
 
 - [x] Swipe up-down right edge of screen to control Volume
 
-- [ ]Swipe left-right to control media progress(forward,backward...**coming soon**)
+- [ ] Swipe left-right to control media progress(forward,backward...**coming soon**)
 
-- [ ]Show loading before media prepared(**coming soon**)
+- [ ] Show loading before media prepared(**coming soon**)
 
 In short,easy to integrate
 
