@@ -2,8 +2,53 @@
   
 # FINAL EFFECT
 [YOUTUBE](https://www.youtube.com/watch?v=Cew5WQY3_ws)
+Control brightness or volume,gif will be here later
+[!volume](./volume.png)
 
-##More feature will be coming.
+##Feature
+
+- [x] Single tap to show VideoControllerView
+
+- [x] Swipe up-down left edge of screen to control Brightness
+
+- [x] Swipe up-down right edge of screen to control Volume
+
+- [ ]Swipe left-right to control media progress(forward,backward...**coming soon**)
+
+- [ ]Show loading before media prepared(**coming soon**)
+
+In short,easy to integrate
+
+------
+
+##How to use
+> 1.init VideoControllerView like this
+  ```java
+  
+  controller = new VideoControllerView(this);
+  
+  ```
+  
+> 2.after media prepared
+
+  ```java
+  
+  // Implement MediaPlayer.OnPreparedListener
+      @Override
+      public void onPrepared(MediaPlayer mp) {
+         //set media player control listen
+         controller.setMediaPlayerControlListener(this);
+         //set anchor view that hold VideoControllerView
+         controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
+         //if you want to use gesture to control brightness,volume,progress..set this 
+         controller.setGestureListener(this);
+         //start media
+         mMediaPlayer.start();
+      }
+  // End MediaPlayer.OnPreparedListener
+  
+  ```
+
 
 #THANKS
 ExampleMediaController from [ExampleMediaController](https://github.com/brightec/ExampleMediaController)
