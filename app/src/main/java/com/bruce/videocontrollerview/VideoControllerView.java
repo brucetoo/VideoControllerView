@@ -517,10 +517,13 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
 
     /**
      * set gesture listen to control media player
+     * include screen brightness and volume of video
      * @param context
      */
     public void setGestureListener(Context context){
         mVideoGestureListener = this;
+        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         mGestureDetector = new GestureDetector(context,new ViewGestureListener(context,mVideoGestureListener));
     }
 
@@ -542,16 +545,39 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
                if(direction == ViewGestureListener.SWIPE_LEFT){
                    mCenterImage.setImageResource(R.drawable.video_bright_bg);
                    updateBrightness(delta);
-                   postDelayed(new Runnable() {
-                       @Override
-                       public void run() {
-                           mCenterLayout.setVisibility(GONE);
-                       }
-                   },500);
                }else {
-
+                   mCenterImage.setImageResource(R.drawable.video_volume_bg);
+                   updateVolume(delta/ViewGestureListener.getDeviceHeight(mContext));
                }
+               postDelayed(new Runnable() {
+                   @Override
+                   public void run() {
+                       mCenterLayout.setVisibility(GONE);
+                   }
+               },500);
            }
+    }
+
+    private void updateVolume(float delta) {
+
+       mCenterLayout.setVisibility(VISIBLE);
+       mCurVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+       if(mCurVolume < 0){
+           mCurVolume = 0;
+       }
+
+      int volume = (int) (delta * mMaxVolume + mCurVolume);
+        if(volume > mMaxVolume){
+            volume = mMaxVolume;
+        }
+
+        if(volume < 0){
+            volume = 0;
+        }
+      mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+
+      float percent = (delta * mMaxVolume + mCurVolume) / mMaxVolume * 100;
+      mCenterPorgress.setProgress((int) percent);
     }
 
     /**
@@ -576,11 +602,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
         mContext.getWindow().setAttributes(attributes);
 
         float percent = attributes.screenBrightness * 100;
-        Log.e(TAG,percent+"");
-        Log.e(TAG,"mCurBrightness"+mCurBrightness+"");
-        Log.e(TAG,"attributes.screenBrightness"+attributes.screenBrightness+"");
-        Log.e(TAG, "delta:"+delta+"");
-                mCenterPorgress.setProgress((int) percent);
+        mCenterPorgress.setProgress((int) percent);
 
     }
 
