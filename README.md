@@ -14,7 +14,7 @@ Control brightness or volume,gif will be here later
 
 - [x] Swipe up-down right edge of screen to control Volume
 
-- [ ] Swipe left-right to control media progress(forward,backward...**coming soon**)
+- [x] Swipe left-right to control media progress
 
 - [ ] Show loading before media prepared(**coming soon**)
 
@@ -26,6 +26,97 @@ In short,easy to integrate
 > 1.init VideoControllerView like this
   ```java
   controller = new VideoControllerView(this);
+  
+      /**
+       * Implement VideoMediaController.MediaPlayerControl
+        */
+      @Override
+      public boolean canPause() {
+          return true;
+      }
+  
+      @Override
+      public boolean canSeekProgress() {
+          return true;
+      }
+  
+  
+      @Override
+      public int getBufferPercentage() {
+          return 0;
+      }
+  
+      @Override
+      public int getCurrentPosition() {
+           if(null != mMediaPlayer)
+             return mMediaPlayer.getCurrentPosition();
+          else
+             return 0;
+      }
+  
+      @Override
+      public int getDuration() {
+          if(null != mMediaPlayer)
+              return mMediaPlayer.getDuration();
+          else
+              return 0;
+      }
+  
+      @Override
+      public boolean isPlaying() {
+          if(null != mMediaPlayer)
+              return mMediaPlayer.isPlaying();
+          else
+              return false;
+      }
+  
+      @Override
+      public void pause() {
+          if(null != mMediaPlayer) {
+              mMediaPlayer.pause();
+          }
+  
+      }
+  
+      @Override
+      public void seekTo(int i) {
+          if(null != mMediaPlayer) {
+              mMediaPlayer.seekTo(i);
+          }
+      }
+  
+      @Override
+      public void start() {
+          if(null != mMediaPlayer) {
+              mMediaPlayer.start();
+          }
+      }
+  
+      @Override
+      public boolean isFullScreen() {
+          return getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ? true : false;
+      }
+  
+      @Override
+      public void toggleFullScreen() {
+         if(isFullScreen()){
+             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+         }else {
+             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+         }
+      }
+  
+      @Override
+      public void exit() {
+          resetPlayer();
+          finish();
+      }
+  
+      @Override
+      public String getTopTitle() {
+          return "buck bunny".toUpperCase();
+      }
+      // End VideoMediaController.MediaPlayerControl
   
   ```
 > 2.after media prepared

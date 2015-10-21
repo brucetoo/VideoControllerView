@@ -149,14 +149,10 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     }
 
     @Override
-    public boolean canSeekBackward() {
+    public boolean canSeekProgress() {
         return true;
     }
 
-    @Override
-    public boolean canSeekForward() {
-        return true;
-    }
 
     @Override
     public int getBufferPercentage() {

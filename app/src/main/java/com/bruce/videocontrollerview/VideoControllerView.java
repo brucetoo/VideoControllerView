@@ -41,6 +41,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
 
     private static final int HANDLER_ANIMATE_OUT = 1;// out animate
     private static final int HANDLER_UPDATE_PROGRESS = 2;//cycle update progress
+    private static final long PROGRESS_SEEK = 5000;
     private MediaPlayerControlListener mPlayer;// control media play
     private Activity mContext;
     private ViewGroup mAnchorView;//anchor view
@@ -453,42 +454,6 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
     };
 
     /**
-     * set backward listener,may add gesture to handle this
-     */
-    private View.OnClickListener mBackwardListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            if (mPlayer == null) {
-                return;
-            }
-
-            int pos = mPlayer.getCurrentPosition();
-            pos -= 5000;
-            mPlayer.seekTo(pos);
-            setSeekProgress();
-
-            show();
-        }
-    };
-
-    /**
-     * set forward listener
-     */
-    private View.OnClickListener mForwardListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            if (mPlayer == null) {
-                return;
-            }
-
-            int pos = mPlayer.getCurrentPosition();
-            pos += 15000;
-            mPlayer.seekTo(pos);
-            setSeekProgress();
-
-            show();
-        }
-    };
-
-    /**
      * setMediaPlayerControlListener update play state
      * @param player self
      */
@@ -536,7 +501,39 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
 
     @Override
     public void onHorizontalScroll(MotionEvent event, float delta) {
+         if(event.getPointerCount() == 1 && mPlayer.canSeekProgress()){
+             if(delta > 0){// seek forward
+                 seekForWard();
+             }else {  //seek backward
+                 seekBackWard();
+             }
+         }
+    }
 
+    private void seekBackWard() {
+        if (mPlayer == null) {
+            return;
+        }
+
+        int pos = mPlayer.getCurrentPosition();
+        pos -= PROGRESS_SEEK;
+        mPlayer.seekTo(pos);
+        setSeekProgress();
+
+        show();
+    }
+
+    private void seekForWard() {
+        if (mPlayer == null) {
+            return;
+        }
+
+        int pos = mPlayer.getCurrentPosition();
+        pos += PROGRESS_SEEK;
+        mPlayer.seekTo(pos);
+        setSeekProgress();
+
+        show();
     }
 
     @Override
@@ -659,16 +656,10 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
         boolean canPause();
 
         /**
-         * can seek backward
+         * can seek video progress
          * @return
          */
-        boolean canSeekBackward();
-
-        /**
-         * can seek forward
-         * @return
-         */
-        boolean canSeekForward();
+        boolean canSeekProgress();
 
         /**
          * video is full screen
