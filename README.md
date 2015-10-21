@@ -1,13 +1,12 @@
 # Expandable custom Media Controller View
   
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ActivityAnimation-green.svg?style=flat)](https://android-arsenal.com/details/1/2573)
 # FINAL EFFECT
-![YOUTUBE](https://www.youtube.com/watch?v=Cew5WQY3_ws)
+[YOUTUBE](https://www.youtube.com/watch?v=Cew5WQY3_ws)
 
 ##More feature will be coming.
 
 #THANKS
-ExampleMediaController from ![ExampleMediaController](https://github.com/brightec/ExampleMediaController)
+ExampleMediaController from [ExampleMediaController](https://github.com/brightec/ExampleMediaController)
 
 ## License
 
