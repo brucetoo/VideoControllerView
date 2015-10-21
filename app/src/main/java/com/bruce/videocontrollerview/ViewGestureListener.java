@@ -15,7 +15,7 @@ public class ViewGestureListener implements GestureDetector.OnGestureListener {
 
     private static final String TAG = "ViewGestureListener";
 
-    private static final int SWIPE_THRESHOLD = 100;//threshold of swipe
+    private static final int SWIPE_THRESHOLD = 60;//threshold of swipe
     public static final int SWIPE_LEFT = 1;
     public static final int SWIPE_RIGHT = 2;
     private VideoGestureListener listener;
@@ -44,9 +44,9 @@ public class ViewGestureListener implements GestureDetector.OnGestureListener {
         } else {
             if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
                 if(e1.getX() < getDeviceWidth(context)*1.0/5) {//left edge
-                    listener.onVerticalScroll(e2,deltaY,SWIPE_LEFT);
+                    listener.onVerticalScroll(e2,-deltaY,SWIPE_LEFT);
                 }else if(e1.getX() > getDeviceWidth(context)*4.0/5){//right edge
-                    listener.onVerticalScroll(e2,deltaY,SWIPE_RIGHT);
+                    listener.onVerticalScroll(e2,-deltaY,SWIPE_RIGHT);
                 }
                 return true;
             }

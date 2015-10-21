@@ -7,7 +7,9 @@ package com.bruce.videocontrollerview;
  */
 
 import android.animation.LayoutTransition;
+import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -17,11 +19,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -37,7 +42,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
     private static final int HANDLER_ANIMATE_OUT = 1;// out animate
     private static final int HANDLER_UPDATE_PROGRESS = 2;//cycle update progress
     private MediaPlayerControlListener mPlayer;// control media play
-    private Context mContext;
+    private Activity mContext;
     private ViewGroup mAnchorView;//anchor view
     private View mRootView; // root view of this
     private SeekBar mSeekBar;
@@ -52,26 +57,34 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
     private View mTopLayout;//this can custom animate layout
     private ImageButton mBackButton;
     private TextView mTitleText;
+    //center layout
+    private View mCenterLayout;
+    private ImageView mCenterImage;
+    private ProgressBar mCenterPorgress;
+    private float mCurBrightness;
+    private float mCurVolume;
+    private AudioManager mAudioManager;
+    private int mMaxVolume;
     //bottom layout
     private View mBottomLayout;
     private ImageButton mPauseButton;
     private ImageButton mFullscreenButton;
     private Handler mHandler = new ControllerViewHandler(this);
 
-    public VideoControllerView(Context context, AttributeSet attrs) {
+    public VideoControllerView(Activity context, AttributeSet attrs) {
         super(context, attrs);
         mRootView = null;
         mContext = context;
         Log.i(TAG, TAG);
     }
 
-    public VideoControllerView(Context context, boolean useFastForward) {
+    public VideoControllerView(Activity context, boolean useFastForward) {
         super(context);
         mContext = context;
         Log.i(TAG, TAG);
     }
 
-    public VideoControllerView(Context context) {
+    public VideoControllerView(Activity context) {
         this(context, true);
         Log.i(TAG, TAG);
     }
@@ -133,6 +146,12 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
         }
 
         mTitleText = (TextView) v.findViewById(R.id.top_title);
+
+        //center layout
+        mCenterLayout = v.findViewById(R.id.layout_center);
+        mCenterLayout.setVisibility(GONE);
+        mCenterImage = (ImageView) v.findViewById(R.id.image_center_bg);
+        mCenterPorgress = (ProgressBar) v.findViewById(R.id.progress_center);
 
         //bottom layout
         mBottomLayout = v.findViewById(R.id.layout_bottom);
@@ -519,6 +538,49 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
 
     @Override
     public void onVerticalScroll(MotionEvent motionEvent, float delta, int direction) {
+           if(motionEvent.getPointerCount() == 1){
+               if(direction == ViewGestureListener.SWIPE_LEFT){
+                   mCenterImage.setImageResource(R.drawable.video_bright_bg);
+                   updateBrightness(delta);
+                   postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           mCenterLayout.setVisibility(GONE);
+                       }
+                   },500);
+               }else {
+
+               }
+           }
+    }
+
+    /**
+     * update brightness
+     * @param delta
+     */
+    private void updateBrightness(float delta) {
+        mCurBrightness = mContext.getWindow().getAttributes().screenBrightness;
+        if(mCurBrightness <= 0.01f){
+            mCurBrightness = 0.01f;
+        }
+
+        mCenterLayout.setVisibility(VISIBLE);
+
+        WindowManager.LayoutParams attributes = mContext.getWindow().getAttributes();
+        attributes.screenBrightness = mCurBrightness + delta/ViewGestureListener.getDeviceHeight(mContext);
+        if(attributes.screenBrightness >= 1.0f){
+            attributes.screenBrightness = 1.0f;
+        }else if(attributes.screenBrightness <= 0.01f){
+            attributes.screenBrightness = 0.01f;
+        }
+        mContext.getWindow().setAttributes(attributes);
+
+        float percent = attributes.screenBrightness * 100;
+        Log.e(TAG,percent+"");
+        Log.e(TAG,"mCurBrightness"+mCurBrightness+"");
+        Log.e(TAG,"attributes.screenBrightness"+attributes.screenBrightness+"");
+        Log.e(TAG, "delta:"+delta+"");
+                mCenterPorgress.setProgress((int) percent);
 
     }
 
