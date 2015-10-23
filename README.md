@@ -2,9 +2,9 @@
   
 # FINAL EFFECT
 [YOUTUBE](https://www.youtube.com/watch?v=Cew5WQY3_ws)
-Control brightness or volume,gif will be here later
+Control brightness or volume,or progress
 
-![volume](./volume.png)
+![volume](./demo.gif)
 
 ##Feature
 
