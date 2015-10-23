@@ -18,6 +18,8 @@ Control brightness or volume,or progress
 
 - [ ] Show loading before media prepared(**coming soon**)
 
+- [ ] More custom things may be added(Like custom icon,swipe Constant of brightness,volume,progress.)
+
 In short,easy to integrate
 
 ------
