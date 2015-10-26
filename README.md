@@ -2,9 +2,9 @@
   
 # FINAL EFFECT
 [YOUTUBE](https://www.youtube.com/watch?v=Cew5WQY3_ws)
-Control brightness or volume,gif will be here later
+Control brightness or volume,or progress
 
-![volume](./volume.png)
+![volume](./demo.gif)
 
 ##Feature
 
@@ -17,6 +17,8 @@ Control brightness or volume,gif will be here later
 - [x] Swipe left-right to control media progress
 
 - [x] Show loading before media prepared(In fact,it's not necessary to build in ControllerView)
+
+- [ ] More custom things may be added(Like custom icon,swipe Constant of brightness,volume,progress.)
 
 In short,easy to integrate
 
