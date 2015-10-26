@@ -17,6 +17,14 @@
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="250dp" />
+
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:id="@+id/loading"
+            style="@android:style/Widget.ProgressBar.Inverse"
+            />
     </FrameLayout>
 
 </RelativeLayout>

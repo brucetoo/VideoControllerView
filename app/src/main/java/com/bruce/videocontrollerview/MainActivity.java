@@ -27,6 +27,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     private int mVideoWidth;
     private int mVideoHeight;
     private View mContentView;
+    private View mLoadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +37,14 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
 
         mVideoSurface = (ResizeSurfaceView) findViewById(R.id.videoSurface);
         mContentView = findViewById(R.id.video_container);
+        mLoadingView = findViewById(R.id.loading);
         SurfaceHolder videoHolder = mVideoSurface.getHolder();
         videoHolder.addCallback(this);
 
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setOnVideoSizeChangedListener(this);
             controller = new VideoControllerView(this);
+            mLoadingView.setVisibility(View.VISIBLE);
 
             try {
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -134,6 +137,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     public void onPrepared(MediaPlayer mp) {
         //setup video controller view
         controller.setMediaPlayerControlListener(this);
+        mLoadingView.setVisibility(View.GONE);
+        mVideoSurface.setVisibility(View.VISIBLE);
         controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
         controller.setGestureListener(this);
         mMediaPlayer.start();

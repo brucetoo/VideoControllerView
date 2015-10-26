@@ -16,7 +16,7 @@ Control brightness or volume,gif will be here later
 
 - [x] Swipe left-right to control media progress
 
-- [ ] Show loading before media prepared(**coming soon**)
+- [x] Show loading before media prepared(In fact,it's not necessary to build in ControllerView)
 
 In short,easy to integrate
 
