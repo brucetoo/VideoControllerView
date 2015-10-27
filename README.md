@@ -1,5 +1,5 @@
 # Expandable custom Media Controller View
-  
+  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-VideoControllerView-green.svg?style=flat)](https://android-arsenal.com/details/1/2668)
 # FINAL EFFECT
 [YOUTUBE](https://www.youtube.com/watch?v=Cew5WQY3_ws)
 Control brightness or volume,or progress
