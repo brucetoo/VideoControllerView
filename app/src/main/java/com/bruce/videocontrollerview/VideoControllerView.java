@@ -544,14 +544,14 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
                    updateBrightness(delta);
                }else {
                    mCenterImage.setImageResource(R.drawable.video_volume_bg);
-                   updateVolume(delta/ViewGestureListener.getDeviceHeight(mContext));
+                   updateVolume(delta);
                }
                postDelayed(new Runnable() {
                    @Override
                    public void run() {
                        mCenterLayout.setVisibility(GONE);
                    }
-               },500);
+               },1000);
            }
     }
 
@@ -563,7 +563,9 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
            mCurVolume = 0;
        }
 
-      int volume = (int) (delta * mMaxVolume + mCurVolume);
+       Log.e("mCurVolume:",""+mCurVolume);
+       Log.e("delta:",""+delta);
+      int volume = (int) (delta * mMaxVolume/ViewGestureListener.getDeviceHeight(mContext) + mCurVolume);
         if(volume > mMaxVolume){
             volume = mMaxVolume;
         }
@@ -573,7 +575,9 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
         }
       mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
 
-      float percent = (delta * mMaxVolume + mCurVolume) / mMaxVolume * 100;
+      float percent = (float) ((volume * 1.0 / mMaxVolume) * 100);
+        Log.e("volume:",""+volume);
+        Log.e("percent:",""+percent);
       mCenterPorgress.setProgress((int) percent);
     }
 

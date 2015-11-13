@@ -2,6 +2,7 @@ package com.bruce.videocontrollerview;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.WindowManager;
@@ -35,7 +36,7 @@ public class ViewGestureListener implements GestureDetector.OnGestureListener {
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         float deltaX = e2.getX() - e1.getX();
-        float deltaY = e2.getY() - e1.getY();
+        float deltaY = e2.getRawY() - e1.getY();
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
                 listener.onHorizontalScroll(e2, deltaX);
@@ -44,9 +45,11 @@ public class ViewGestureListener implements GestureDetector.OnGestureListener {
         } else {
             if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
                 if(e1.getX() < getDeviceWidth(context)*1.0/5) {//left edge
-                    listener.onVerticalScroll(e2,-deltaY,SWIPE_LEFT);
+                    Log.e("-deltaY",""+-deltaY);
+                    listener.onVerticalScroll(e2,-deltaY * 0.2f,SWIPE_LEFT);
                 }else if(e1.getX() > getDeviceWidth(context)*4.0/5){//right edge
-                    listener.onVerticalScroll(e2,-deltaY,SWIPE_RIGHT);
+                    Log.e("-deltaY",""+-deltaY);
+                    listener.onVerticalScroll(e2,-deltaY * 0.5f,SWIPE_RIGHT);
                 }
                 return true;
             }
