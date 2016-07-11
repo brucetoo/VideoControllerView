@@ -12,7 +12,7 @@ import android.view.WindowManager;
  * On 2015/10/21
  * At 9:58
  */
-public class ViewGestureListener implements GestureDetector.OnGestureListener {
+public class ViewGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     private static final String TAG = "ViewGestureListener";
 
@@ -22,7 +22,7 @@ public class ViewGestureListener implements GestureDetector.OnGestureListener {
     private VideoGestureListener listener;
     private Context context;
 
-    public ViewGestureListener(Context context,VideoGestureListener listener) {
+    public ViewGestureListener(Context context, VideoGestureListener listener) {
         this.context = context;
         this.listener = listener;
     }
@@ -30,52 +30,30 @@ public class ViewGestureListener implements GestureDetector.OnGestureListener {
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         listener.onSingleTap();
-        return false;
+        return true;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        float deltaX = e2.getX() - e1.getX();
-        float deltaY = e2.getRawY() - e1.getY();
+        float deltaX = e1.getRawX() - e2.getRawX();
+        float deltaY = e1.getRawY() - e2.getRawY();
+        Log.i(TAG, "onScroll");
+
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
                 listener.onHorizontalScroll(e2, deltaX);
             }
-            return true;
         } else {
             if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
-                if(e1.getX() < getDeviceWidth(context)*1.0/5) {//left edge
-                    Log.e("-deltaY",""+-deltaY);
-                    listener.onVerticalScroll(e2,-deltaY * 0.2f,SWIPE_LEFT);
-                }else if(e1.getX() > getDeviceWidth(context)*4.0/5){//right edge
-                    Log.e("-deltaY",""+-deltaY);
-                    listener.onVerticalScroll(e2,-deltaY * 0.5f,SWIPE_RIGHT);
+                Log.i(TAG, "deltaY->" + -deltaY);
+                if (e1.getX() < getDeviceWidth(context) * 1.0 / 5) {//left edge
+                    listener.onVerticalScroll(e2, deltaY / getDeviceHeight(context), SWIPE_LEFT);
+                } else if (e1.getX() > getDeviceWidth(context) * 4.0 / 5) {//right edge
+                    listener.onVerticalScroll(e2, deltaY / getDeviceHeight(context), SWIPE_RIGHT);
                 }
-                return true;
             }
         }
-        return false;
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
-
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
+        return true;
     }
 
     public static int getDeviceWidth(Context context) {

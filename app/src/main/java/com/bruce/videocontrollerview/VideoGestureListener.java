@@ -16,15 +16,15 @@ public interface VideoGestureListener {
     /**
      * Horizontal scroll to control progress of video
      * @param event
-     * @param delta
+     * @param percent
      */
-    void onHorizontalScroll(MotionEvent event, float delta);
+    void onHorizontalScroll(MotionEvent event, float percent);
 
     /**
      * vertical scroll listen
      * @param motionEvent
-     * @param delta
+     * @param percent
      * @param direction  left or right edge for control brightness or volume
      */
-    void onVerticalScroll(MotionEvent motionEvent, float delta, int direction);
+    void onVerticalScroll(MotionEvent motionEvent, float percent, int direction);
 }

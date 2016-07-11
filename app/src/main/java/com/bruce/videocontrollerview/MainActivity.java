@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
         mVideoSurface.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                controller.toggleContollerView();
+                controller.toggleControllerView();
                 return false;
             }
         });
