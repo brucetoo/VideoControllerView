@@ -1,7 +1,5 @@
 package com.bruce.videocontrollerview;
 
-import android.view.MotionEvent;
-
 /**
  * Created by Brucetoo
  * On 2015/10/21
@@ -15,16 +13,16 @@ public interface VideoGestureListener {
 
     /**
      * Horizontal scroll to control progress of video
-     * @param event
-     * @param percent
+     *
+     * @param seekForward seek to forward or not
      */
-    void onHorizontalScroll(MotionEvent event, float percent);
+    void onHorizontalScroll(boolean seekForward);
 
     /**
      * vertical scroll listen
-     * @param motionEvent
-     * @param percent
-     * @param direction  left or right edge for control brightness or volume
+     *
+     * @param percent   swipe percent
+     * @param direction left or right edge for control brightness or volume
      */
-    void onVerticalScroll(MotionEvent motionEvent, float percent, int direction);
+    void onVerticalScroll(float percent, int direction);
 }

@@ -41,7 +41,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
 
     private static final int HANDLER_ANIMATE_OUT = 1;// out animate
     private static final int HANDLER_UPDATE_PROGRESS = 2;//cycle update progress
-    private static final long PROGRESS_SEEK = 5000;
+    private static final long PROGRESS_SEEK = 3000;
     private MediaPlayerControlListener mPlayer;// control media play
     private Activity mContext;
     private ViewGroup mAnchorView;//anchor view
@@ -513,9 +513,9 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
     }
 
     @Override
-    public void onHorizontalScroll(MotionEvent event, float percent) {
-        if (event.getPointerCount() == 1 && mPlayer.canSeekProgress()) {
-            if (percent > 0) {// seek forward
+    public void onHorizontalScroll(boolean seekForward) {
+        if (mPlayer.canSeekProgress()) {
+            if (seekForward) {// seek forward
                 seekForWard();
             } else {  //seek backward
                 seekBackWard();
@@ -550,7 +550,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
     }
 
     @Override
-    public void onVerticalScroll(MotionEvent motionEvent, float percent, int direction) {
+    public void onVerticalScroll(float percent, int direction) {
         if (direction == ViewGestureListener.SWIPE_LEFT) {
             mCenterImage.setImageResource(R.drawable.video_bright_bg);
             updateBrightness(percent);

@@ -37,19 +37,18 @@ public class ViewGestureListener extends GestureDetector.SimpleOnGestureListener
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         float deltaX = e1.getRawX() - e2.getRawX();
         float deltaY = e1.getRawY() - e2.getRawY();
-        Log.i(TAG, "onScroll");
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
-                listener.onHorizontalScroll(e2, deltaX);
+                listener.onHorizontalScroll(deltaX < 0);
             }
         } else {
             if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
-                Log.i(TAG, "deltaY->" + -deltaY);
+                Log.i(TAG, "deltaY->" + deltaY);
                 if (e1.getX() < getDeviceWidth(context) * 1.0 / 5) {//left edge
-                    listener.onVerticalScroll(e2, deltaY / getDeviceHeight(context), SWIPE_LEFT);
+                    listener.onVerticalScroll(deltaY / getDeviceHeight(context), SWIPE_LEFT);
                 } else if (e1.getX() > getDeviceWidth(context) * 4.0 / 5) {//right edge
-                    listener.onVerticalScroll(e2, deltaY / getDeviceHeight(context), SWIPE_RIGHT);
+                    listener.onVerticalScroll(deltaY / getDeviceHeight(context), SWIPE_RIGHT);
                 }
             }
         }
