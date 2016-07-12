@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
         mLoadingView.setVisibility(View.GONE);
         mVideoSurface.setVisibility(View.VISIBLE);
         controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
-        controller.setGestureListener(this);
+        controller.setGestureListener();
         mMediaPlayer.start();
     }
 // End MediaPlayer.OnPreparedListener
@@ -154,7 +154,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     }
 
     @Override
-    public boolean canSeekProgress() {
+    public boolean canSeek() {
         return true;
     }
 
