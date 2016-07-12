@@ -201,22 +201,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
                                     .start(new ViewAnimator.Listeners.Start() {
                                         @Override
                                         public void onStart() {
-                                            setSeekProgress();
-                                            if (mPauseButton != null) {
-                                                mPauseButton.requestFocus();
-                                                if (!mMediaPlayer.canPause()) {
-                                                    mPauseButton.setEnabled(false);
-                                                }
-                                            }
-                                        }
-                                    })
-                                    .end(new ViewAnimator.Listeners.End() {
-                                        @Override
-                                        public void onEnd() {
                                             mIsShowing = true;
-                                            togglePausePlay();
-                                            toggleFullScreen();
-                                            //update progress
                                             mHandler.sendEmptyMessage(HANDLER_UPDATE_PROGRESS);
                                         }
                                     });
@@ -224,6 +209,19 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
                     });
 
         }
+
+        setSeekProgress();
+        if (mPauseButton != null) {
+            mPauseButton.requestFocus();
+            if (!mMediaPlayer.canPause()) {
+                mPauseButton.setEnabled(false);
+            }
+        }
+
+        togglePausePlay();
+        toggleFullScreen();
+        //update progress
+        mHandler.sendEmptyMessage(HANDLER_UPDATE_PROGRESS);
 
     }
 
