@@ -327,7 +327,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
                 mCurVolume = -1;
                 mCurBrightness = -1;
                 mCenterLayout.setVisibility(GONE);
-                break;
+//                break;// do need bread,should let gestureDetector to handle event
             default://gestureDetector handle other MotionEvent
                 mGestureDetector.onTouchEvent(event);
         }
@@ -510,6 +510,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
     @Override
     public void onSingleTap() {
         toggleControllerView();
+
     }
 
     @Override
