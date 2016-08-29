@@ -344,7 +344,6 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
         setSeekProgress();
         if (mPauseButton != null) {
             mPauseButton.requestFocus();
-            mPauseButton.setEnabled(false);
         }
         togglePausePlay();
         toggleFullScreen();
