@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,7 +32,6 @@ import java.util.Locale;
  * At 16:09
  */
 public class VideoControllerView extends FrameLayout implements VideoGestureListener {
-
 
     private static final String TAG = "VideoControllerView";
 
@@ -138,7 +138,7 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
         private int stretchIcon = R.drawable.ic_media_fullscreen_stretch;
 
         //Required
-        public Builder(@Nullable Activity context, @Nullable MediaPlayerControlListener mediaControlListener){
+        public Builder(@Nullable Activity context,@Nullable MediaPlayerControlListener mediaControlListener){
             this.context = context;
             this.mediaPlayerControlListener = mediaControlListener;
         }
@@ -453,9 +453,13 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
 
         if (mEndTime != null)
             mEndTime.setText(stringToTime(duration));
-        if (mCurrentTime != null)
+        if (mCurrentTime != null) {
+            Log.e(TAG, "position:" + position + " -> duration:" + duration);
             mCurrentTime.setText(stringToTime(position));
-
+            if(mMediaPlayerControlListener.isComplete()){
+                mCurrentTime.setText(stringToTime(duration));
+            }
+        }
         mTitleText.setText(mVideoTitle);
         return position;
     }
@@ -812,6 +816,12 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
          * @return is video playing
          */
         boolean isPlaying();
+
+        /**
+         * video is complete
+         * @return complete or not
+         */
+        boolean isComplete();
 
         /**
          * get buffer percent

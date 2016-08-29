@@ -18,7 +18,8 @@ import android.widget.FrameLayout;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControlListener, MediaPlayer.OnVideoSizeChangedListener {
+
+public class MainActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControlListener, MediaPlayer.OnVideoSizeChangedListener, MediaPlayer.OnCompletionListener {
 
     private final static String TAG = "MainActivity";
     ResizeSurfaceView mVideoSurface;
@@ -28,6 +29,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     private int mVideoHeight;
     private View mContentView;
     private View mLoadingView;
+    private boolean mIsComplete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mMediaPlayer.setDataSource(this, Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
                 mMediaPlayer.setOnPreparedListener(this);
+                mMediaPlayer.setOnCompletionListener(this);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             } catch (SecurityException e) {
@@ -152,6 +155,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
         mLoadingView.setVisibility(View.GONE);
         mVideoSurface.setVisibility(View.VISIBLE);
         mMediaPlayer.start();
+        mIsComplete = false;
     }
 // End MediaPlayer.OnPreparedListener
 
@@ -189,6 +193,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     }
 
     @Override
+    public boolean isComplete() {
+        return mIsComplete;
+    }
+
+    @Override
     public void pause() {
         if(null != mMediaPlayer) {
             mMediaPlayer.pause();
@@ -207,6 +216,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     public void start() {
         if(null != mMediaPlayer) {
             mMediaPlayer.start();
+            mIsComplete = false;
         }
     }
 
@@ -228,6 +238,11 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     public void exit() {
         resetPlayer();
         finish();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mIsComplete = true;
     }
 
     // End VideoMediaController.MediaPlayerControl
