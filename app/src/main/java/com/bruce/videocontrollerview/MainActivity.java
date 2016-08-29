@@ -41,10 +41,23 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
         SurfaceHolder videoHolder = mVideoSurface.getHolder();
         videoHolder.addCallback(this);
 
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setOnVideoSizeChangedListener(this);
-            controller = new VideoControllerView(this);
-            mLoadingView.setVisibility(View.VISIBLE);
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnVideoSizeChangedListener(this);
+        //(FrameLayout) findViewById(R.id.videoSurfaceContainer)
+        controller = new VideoControllerView.Builder(this, this)
+                .withVideoTitle("Buck Bunny")
+                .withVideoSurfaceView(mVideoSurface)//to enable toggle display controller view
+                .canControlBrightness(true)
+                .canControlVolume(true)
+                .canSeekVideo(true)
+                .exitIcon(R.drawable.video_top_back)
+                .pauseIcon(R.drawable.ic_media_pause)
+                .playIcon(R.drawable.ic_media_play)
+                .shrinkIcon(R.drawable.ic_media_fullscreen_shrink)
+                .stretchIcon(R.drawable.ic_media_fullscreen_stretch)
+                .build((FrameLayout) findViewById(R.id.videoSurfaceContainer));//layout container that hold video play view
+
+        mLoadingView.setVisibility(View.VISIBLE);
 
             try {
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -136,11 +149,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     @Override
     public void onPrepared(MediaPlayer mp) {
         //setup video controller view
-        controller.setMediaPlayerControlListener(this);
         mLoadingView.setVisibility(View.GONE);
         mVideoSurface.setVisibility(View.VISIBLE);
-        controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
-        controller.setGestureListener();
         mMediaPlayer.start();
     }
 // End MediaPlayer.OnPreparedListener
@@ -148,16 +158,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
     /**
      * Implement VideoMediaController.MediaPlayerControl
       */
-    @Override
-    public boolean canPause() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeek() {
-        return true;
-    }
-
 
     @Override
     public int getBufferPercentage() {
@@ -230,10 +230,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Me
         finish();
     }
 
-    @Override
-    public String getTopTitle() {
-        return "buck bunny".toUpperCase();
-    }
     // End VideoMediaController.MediaPlayerControl
 
 }

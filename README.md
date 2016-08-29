@@ -25,17 +25,28 @@ In short,easy to integrate
 ------
 
 ##How to use
-> 1.init VideoControllerView like this
+
+Config VideoControllerView like this
+
   ```java
-  controller = new VideoControllerView(this);
+  
+  
+     controller = new VideoControllerView.Builder(this, this)
+                    .withVideoTitle("Buck Bunny")
+                    .withVideoSurfaceView(mVideoSurface)//to enable toggle display controller view
+                    .canControlBrightness(true)
+                    .canControlVolume(true)
+                    .canSeekVideo(true)
+                    .exitIcon(R.drawable.video_top_back)
+                    .pauseIcon(R.drawable.ic_media_pause)
+                    .playIcon(R.drawable.ic_media_play)
+                    .shrinkIcon(R.drawable.ic_media_fullscreen_shrink)
+                    .stretchIcon(R.drawable.ic_media_fullscreen_stretch)
+                    .build((FrameLayout) findViewById(R.id.videoSurfaceContainer));//layout container that hold video play view
   
       /**
        * Implement VideoMediaController.MediaPlayerControl
         */
-      @Override
-      public boolean canPause() {
-          return true;
-      }
   
       @Override
       public boolean canSeekProgress() {
@@ -113,30 +124,7 @@ In short,easy to integrate
           resetPlayer();
           finish();
       }
-  
-      @Override
-      public String getTopTitle() {
-          return "buck bunny".toUpperCase();
-      }
       // End VideoMediaController.MediaPlayerControl
-  
-  ```
-> 2.after media prepared
-
-  ```java
-  // Implement MediaPlayer.OnPreparedListener
-      @Override
-      public void onPrepared(MediaPlayer mp) {
-         //set media player control listen
-         controller.setMediaPlayerControlListener(this);
-         //set anchor view that hold VideoControllerView
-         controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
-         //if you want to use gesture to control brightness,volume,progress..set this 
-         controller.setGestureListener(this);
-         //start media
-         mMediaPlayer.start();
-      }
-  // End MediaPlayer.OnPreparedListener
   
   ```
 
