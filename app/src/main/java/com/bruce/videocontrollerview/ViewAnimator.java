@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 
-import java.lang.ref.WeakReference;
-
 /**
  * Created by Bruce Too
  * On 7/12/16.
@@ -219,17 +217,17 @@ public class ViewAnimator {
         }
     }
 
-    static class DurXAnimatorUpdate implements ViewPropertyAnimatorUpdateListener {
+    static class AnimatorUpdate implements ViewPropertyAnimatorUpdateListener {
 
-        WeakReference<AnimatorExecutor> reference;
+        AnimatorExecutor animatorExecutor;
 
-        public DurXAnimatorUpdate(AnimatorExecutor animatorExecutor) {
-            this.reference = new WeakReference<>(animatorExecutor);
+        public AnimatorUpdate(AnimatorExecutor animatorExecutor) {
+            this.animatorExecutor = animatorExecutor;
         }
 
         @Override
         public void onAnimationUpdate(View view) {
-            AnimatorExecutor animatorExecutor = reference.get();
+
             if (animatorExecutor != null && animatorExecutor.updateListener != null) {
                 Listeners.Update updateListener = animatorExecutor.updateListener;
                 updateListener.update();
@@ -357,7 +355,7 @@ public class ViewAnimator {
 
         public AnimatorExecutor update(Listeners.Update listener) {
             updateListener = listener;
-            animator.setUpdateListener(new DurXAnimatorUpdate(this));
+            animator.setUpdateListener(new AnimatorUpdate(this));
             return this;
         }
 
