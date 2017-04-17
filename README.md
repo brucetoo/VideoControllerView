@@ -6,7 +6,7 @@ Control brightness or volume,or progress
 
 ![volume](./demo.gif)
 
-##Feature
+## Feature
 
 - [x] Single tap to show VideoControllerView
 
@@ -24,7 +24,7 @@ In short,easy to integrate
 
 ------
 
-##How to use
+## How to use
 
 Config VideoControllerView like this
 
@@ -129,7 +129,7 @@ Config VideoControllerView like this
   ```
 
 
-#THANKS
+# THANKS
 ExampleMediaController from [ExampleMediaController](https://github.com/brightec/ExampleMediaController)
 
 ## License
