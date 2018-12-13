@@ -123,7 +123,7 @@ public class ViewAnimator {
 
     public ViewAnimator translationY(float translation) {
         if (view != null) {
-            view.setTranslationX(translation);
+            view.setTranslationY(translation);
         }
         return this;
     }
