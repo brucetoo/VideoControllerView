@@ -5,8 +5,6 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -22,6 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Formatter;
 import java.util.Locale;
@@ -264,43 +264,43 @@ public class VideoControllerView extends FrameLayout implements VideoGestureList
     private void initControllerView() {
         //top layout
         mTopLayout = mRootView.findViewById(R.id.layout_top);
-        mBackButton = (ImageButton) mRootView.findViewById(R.id.top_back);
+        mBackButton = mRootView.findViewById(R.id.top_back);
         mBackButton.setImageResource(mExitIcon);
         if (mBackButton != null) {
             mBackButton.requestFocus();
             mBackButton.setOnClickListener(mBackListener);
         }
 
-        mTitleText = (TextView) mRootView.findViewById(R.id.top_title);
+        mTitleText = mRootView.findViewById(R.id.top_title);
 
         //center layout
         mCenterLayout = mRootView.findViewById(R.id.layout_center);
         mCenterLayout.setVisibility(GONE);
-        mCenterImage = (ImageView) mRootView.findViewById(R.id.image_center_bg);
-        mCenterProgress = (ProgressBar) mRootView.findViewById(R.id.progress_center);
+        mCenterImage = mRootView.findViewById(R.id.image_center_bg);
+        mCenterProgress = mRootView.findViewById(R.id.progress_center);
 
         //bottom layout
         mBottomLayout = mRootView.findViewById(R.id.layout_bottom);
-        mPauseButton = (ImageButton) mRootView.findViewById(R.id.bottom_pause);
+        mPauseButton = mRootView.findViewById(R.id.bottom_pause);
         if (mPauseButton != null) {
             mPauseButton.requestFocus();
             mPauseButton.setOnClickListener(mPauseListener);
         }
 
-        mFullscreenButton = (ImageButton) mRootView.findViewById(R.id.bottom_fullscreen);
+        mFullscreenButton = mRootView.findViewById(R.id.bottom_fullscreen);
         if (mFullscreenButton != null) {
             mFullscreenButton.requestFocus();
             mFullscreenButton.setOnClickListener(mFullscreenListener);
         }
 
-        mSeekBar = (SeekBar) mRootView.findViewById(R.id.bottom_seekbar);
+        mSeekBar = mRootView.findViewById(R.id.bottom_seekbar);
         if (mSeekBar != null) {
             mSeekBar.setOnSeekBarChangeListener(mSeekListener);
             mSeekBar.setMax(1000);
         }
 
-        mEndTime = (TextView) mRootView.findViewById(R.id.bottom_time);
-        mCurrentTime = (TextView) mRootView.findViewById(R.id.bottom_time_current);
+        mEndTime = mRootView.findViewById(R.id.bottom_time);
+        mCurrentTime = mRootView.findViewById(R.id.bottom_time_current);
 
         //init formatter
         mFormatBuilder = new StringBuilder();
