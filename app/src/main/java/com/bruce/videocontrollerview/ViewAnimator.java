@@ -1,13 +1,13 @@
 package com.bruce.videocontrollerview;
 
 import android.graphics.Rect;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
-import android.support.v4.view.ViewPropertyAnimatorListener;
-import android.support.v4.view.ViewPropertyAnimatorUpdateListener;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorCompat;
+import androidx.core.view.ViewPropertyAnimatorListener;
+import androidx.core.view.ViewPropertyAnimatorUpdateListener;
 
 /**
  * Created by Bruce Too
@@ -87,65 +87,65 @@ public class ViewAnimator {
 
     public ViewAnimator alpha(float alpha) {
         if (view != null) {
-            ViewCompat.setAlpha(view, alpha);
+            view.setAlpha(alpha);
         }
         return this;
     }
 
     public ViewAnimator scaleX(float scale) {
         if (view != null) {
-            ViewCompat.setScaleX(view, scale);
+            view.setScaleX(scale);
         }
         return this;
     }
 
     public ViewAnimator scaleY(float scale) {
         if (view != null) {
-            ViewCompat.setScaleY(view, scale);
+            view.setScaleY(scale);
         }
         return this;
     }
 
     public ViewAnimator scale(float scale) {
         if (view != null) {
-            ViewCompat.setScaleX(view, scale);
-            ViewCompat.setScaleY(view, scale);
+            view.setScaleX(scale);
+            view.setScaleY(scale);
         }
         return this;
     }
 
     public ViewAnimator translationX(float translation) {
         if (view != null) {
-            ViewCompat.setTranslationX(view, translation);
+            view.setTranslationX(translation);
         }
         return this;
     }
 
     public ViewAnimator translationY(float translation) {
         if (view != null) {
-            ViewCompat.setTranslationY(view, translation);
+            view.setTranslationY(translation);
         }
         return this;
     }
 
     public ViewAnimator translation(float translationX, float translationY) {
         if (view != null) {
-            ViewCompat.setTranslationX(view, translationX);
-            ViewCompat.setTranslationY(view, translationY);
+            view.setTranslationX(translationX);
+            view.setTranslationY(translationY);
         }
         return this;
     }
 
     public ViewAnimator pivotX(float percent) {
         if (view != null) {
-            ViewCompat.setPivotX(view, view.getWidth() * percent);
+            view.setPivotX(view.getWidth() * percent);
         }
         return this;
     }
 
     public ViewAnimator pivotY(float percent) {
         if (view != null) {
-            ViewCompat.setPivotY(view, view.getHeight() * percent);
+            view.setPivotY(view.getHeight() * percent);
         }
         return this;
     }
